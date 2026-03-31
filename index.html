@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="小智的数智乐园 - 专业的心理学研究辅助工具平台，提供智能对话、心理测评、日记记录和心理信件等功能">
+    <meta name="keywords" content="心理学,心理测评,情绪管理,心理健康,AI心理陪伴">
+    <title>小智的数智乐园 - 心理陪伴系统</title>
+    
+    <!-- 引入Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <!-- 引入Google字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 登录界面 -->
+    <div class="login-container" id="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="login-logo">🧠</div>
+                <h1 class="login-title">小智的数智乐园</h1>
+                <p class="login-subtitle">专业的心理学研究辅助工具平台</p>
+            </div>
+            
+            <!-- 登录表单 -->
+            <div class="login-form" id="login-form">
+                <div class="input-group">
+                    <label class="input-label">用户名</label>
+                    <input type="text" id="login-username" class="input" placeholder="请输入用户名" autocomplete="username">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">密码</label>
+                    <input type="password" id="login-password" class="input" placeholder="请输入密码" autocomplete="current-password">
+                </div>
+                <div class="login-error" id="login-error" style="display: none;"></div>
+                <button class="btn btn-primary btn-block btn-lg" id="login-btn">
+                    登录
+                </button>
+                <div class="login-divider">
+                    <span>或</span>
+                </div>
+                <button class="btn btn-secondary btn-block" id="show-register-btn">
+                    注册新账号
+                </button>
+                <div class="login-demo-hint">
+                    <details>
+                        <summary>演示账号</summary>
+                        <div class="demo-accounts">
+                            <div class="demo-account">
+                                <strong>管理员账号：</strong> admin / admin123
+                            </div>
+                            <div class="demo-account">
+                                <strong>普通用户：</strong> user1 / user123
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+            
+            <!-- 注册表单 -->
+            <div class="register-form" id="register-form" style="display: none;">
+                <div class="input-group">
+                    <label class="input-label">用户名</label>
+                    <input type="text" id="register-username" class="input" placeholder="请输入用户名（3-20位）" autocomplete="username">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">密码</label>
+                    <input type="password" id="register-password" class="input" placeholder="请输入密码（6位以上）" autocomplete="new-password">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">确认密码</label>
+                    <input type="password" id="register-password-confirm" class="input" placeholder="请再次输入密码" autocomplete="new-password">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">用户类型</label>
+                    <select id="register-role" class="input">
+                        <option value="user">普通用户</option>
+                    </select>
+                    <small class="input-hint">注：管理员账号由系统管理员分配</small>
+                </div>
+                <div class="login-error" id="register-error" style="display: none;"></div>
+                <button class="btn btn-primary btn-block btn-lg" id="register-btn">
+                    注册
+                </button>
+                <div class="login-divider">
+                    <span>或</span>
+                </div>
+                <button class="btn btn-secondary btn-block" id="show-login-btn">
+                    已有账号？去登录
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主应用容器 -->
+    <div class="app-container" id="app-container" style="display: none;">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">🧠</div>
+                    <div class="logo-text">
+                        小智的数智乐园
+                        <span>心理陪伴系统</span>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <!-- 普通用户菜单 -->
+                <div class="nav-section nav-section-user">
+                    <div class="nav-section-title">主菜单</div>
+                    <div class="nav-item active" data-module="home">
+                        <span class="nav-item-icon">🏠</span>
+                        <span class="nav-item-text">首页</span>
+                    </div>
+                    <div class="nav-item" data-module="chat">
+                        <span class="nav-item-icon">💬</span>
+                        <span class="nav-item-text">智能对话</span>
+                    </div>
+                    <div class="nav-item" data-module="measure">
+                        <span class="nav-item-icon">📋</span>
+                        <span class="nav-item-text">心理测评</span>
+                    </div>
+                    <div class="nav-item" data-module="diary">
+                        <span class="nav-item-icon">📔</span>
+                        <span class="nav-item-text">心理日记</span>
+                    </div>
+                    <div class="nav-item" data-module="letter">
+                        <span class="nav-item-icon">💌</span>
+                        <span class="nav-item-text">心理信件</span>
+                    </div>
+                </div>
+                
+                <!-- 管理员菜单 -->
+                <div class="nav-section nav-section-admin" style="display: none;">
+                    <div class="nav-section-title">🔧 管理工具</div>
+                    <div class="nav-item" data-module="userManagement">
+                        <span class="nav-item-icon">👥</span>
+                        <span class="nav-item-text">用户管理</span>
+                    </div>
+                    <div class="nav-item" data-module="dataExport">
+                        <span class="nav-item-icon">📊</span>
+                        <span class="nav-item-text">数据导出</span>
+                    </div>
+                    <div class="nav-item" onclick="App.exportAllData()">
+                        <span class="nav-item-icon">📥</span>
+                        <span class="nav-item-text">导出全部数据</span>
+                    </div>
+                </div>
+                
+                <!-- 通用工具 -->
+                <div class="nav-section">
+                    <div class="nav-section-title">设置</div>
+                    <div class="nav-item" onclick="App.logout()">
+                        <span class="nav-item-icon">🚪</span>
+                        <span class="nav-item-text">退出登录</span>
+                    </div>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-card">
+                    <div class="user-avatar" id="sidebar-user-avatar">智</div>
+                    <div>
+                        <div class="user-name" id="sidebar-user-name">用户名</div>
+                        <div class="user-status" id="sidebar-user-role">🟢 用户</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 顶部导航栏 -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menu-toggle">
+                        ☰
+                    </button>
+                    <nav class="breadcrumb" id="breadcrumb">
+                        <span class="breadcrumb-item">首页</span>
+                    </nav>
+                </div>
+                <div class="topbar-right">
+                    <!-- 项目选择器 -->
+                    <div class="project-selector" id="project-selector">
+                        <button class="project-selector-btn" id="project-selector-btn" onclick="ProjectManager.toggleProjectPanel()">
+                            <span id="current-project-name">📋 全局模式</span>
+                            <span class="project-selector-arrow">▼</span>
+                        </button>
+                        <div class="project-panel" id="project-panel">
+                            <div class="project-panel-header">
+                                <span>📁 我的项目</span>
+                                <button class="btn btn-primary btn-sm" onclick="ProjectManager.showCreateProjectModal()">➕ 新建</button>
+                            </div>
+                            <div class="project-panel-list" id="project-list-container">
+                                <div class="project-panel-item" onclick="ProjectManager.exitProjectMode()">
+                                    <span>📋</span>
+                                    <span>全局模式</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="topbar-btn" title="帮助" id="help-btn">
+                        ❓
+                    </button>
+                </div>
+            </header>
+            
+            <!-- 内容区域 -->
+            <div class="content-area">
+                
+                <!-- ========== 首页模块 ========== -->
+                <section class="module-page active" id="home-page">
+                    <div class="page-header">
+                        <h1 class="page-title">
+                            <span class="page-title-icon">🌟</span>
+                            欢迎来到小智的数智乐园
+                        </h1>
+                        <p class="page-description">
+                            您的专业心理学研究辅助工具，提供智能对话、心理测评、日记记录和心理信件等功能
+                        </p>
+                    </div>
+                    
+                    <!-- 统计数据 -->
+                    <div class="home-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #E3F2FD, #BBDEFB);">📔</div>
+                            <div class="stat-value" id="stat-diary-count">0</div>
+                            <div class="stat-label">日记篇数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #F3E5F5, #E1BEE7);">📋</div>
+                            <div class="stat-value" id="stat-measure-count">0</div>
+                            <div class="stat-label">测评次数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #E8F5E9, #C8E6C9);">💬</div>
+                            <div class="stat-value" id="stat-chat-count">0</div>
+                            <div class="stat-label">对话轮次</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #FFF3E0, #FFE0B2);">💌</div>
+                            <div class="stat-value" id="stat-letter-count">0</div>
+                            <div class="stat-label">心理信件</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 功能模块卡片 -->
+                    <div class="home-modules">
+                        <div class="home-module-card" data-module="chat" id="home-chat-card">
+                            <div class="home-module-icon chat">💬</div>
+                            <div class="home-module-info">
+                                <h3 class="home-module-title">智能对话</h3>
+                                <p class="home-module-desc">与AI心理陪伴助手对话，获得情感支持和倾听</p>
+                            </div>
+                            <div class="home-module-arrow">→</div>
+                        </div>
+                        
+                        <div class="home-module-card" data-module="measure">
+                            <div class="home-module-icon measure">📋</div>
+                            <div class="home-module-info">
+                                <h3 class="home-module-title">心理测评</h3>
+                                <p class="home-module-desc">标准化心理量表测评，了解自己的情绪和心理状态</p>
+                            </div>
+                            <div class="home-module-arrow">→</div>
+                        </div>
+                        
+                        <div class="home-module-card" data-module="diary">
+                            <div class="home-module-icon diary">📔</div>
+                            <div class="home-module-info">
+                                <h3 class="home-module-title">心理日记</h3>
+                                <p class="home-module-desc">记录每日心情，关注情绪变化，追踪心理成长</p>
+                            </div>
+                            <div class="home-module-arrow">→</div>
+                        </div>
+                        
+                        <div class="home-module-card" data-module="letter">
+                            <div class="home-module-icon letter">💌</div>
+                            <div class="home-module-info">
+                                <h3 class="home-module-title">心理信件</h3>
+                                <p class="home-module-desc">给未来自己或重要的人写信，让时间见证成长</p>
+                            </div>
+                            <div class="home-module-arrow">→</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 免责声明 -->
+                    <div class="card mt-lg">
+                        <div class="card-body">
+                            <p class="text-secondary" style="font-size: var(--font-size-sm);">
+                                <strong>⚠️ 免责声明：</strong>本平台提供的心理测评和对话功能仅供自评参考，不构成临床诊断或治疗建议。如您正在经历严重的心理困扰，请及时寻求专业心理工作者或精神科医生的帮助。
+                            </p>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ========== 聊天模块 ========== -->
+                <section class="module-page" id="chat-page">
+                    <div class="page-header">
+                        <h1 class="page-title">
+                            <span class="page-title-icon">💬</span>
+                            智能对话
+                        </h1>
+                        <p class="page-description">与AI心理陪伴助手对话，获得情感支持和倾听</p>
+                    </div>
+                    
+                    <div class="chat-container card">
+                        <div class="chat-header">
+                            <div class="chat-status">
+                                <span class="chat-status-dot"></span>
+                                <span>在线</span>
+                            </div>
+                            <div class="chat-actions">
+                                <button class="btn btn-ghost btn-sm" id="new-chat-btn" title="新建对话">
+                                    ✨ 新对话
+                                </button>
+                                <button class="btn btn-ghost btn-sm" id="chat-history-btn" title="对话历史">
+                                    📚
+                                </button>
+                                <button class="btn btn-ghost btn-sm" id="clear-chat-btn" title="清空对话">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🌟</div>
+                                <div class="empty-state-title">你好！有什么可以帮你的吗？</div>
+                                <div class="empty-state-desc">我是你的心理陪伴助手，可以和你聊聊心情、压力、困惑...</div>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-input-area">
+                            <div class="chat-input-wrapper">
+                                <textarea 
+                                    id="chat-input" 
+                                    class="chat-input" 
+                                    placeholder="输入消息... (Enter发送, Shift+Enter换行)"
+                                    rows="1"
+                                ></textarea>
+                                <button class="btn btn-primary btn-icon" id="chat-send-btn" title="发送">
+                                    ➤
+                                </button>
+                            </div>
+                            <div class="chat-hint">
+                                按 Enter 发送消息 | 最多保存最近10轮对话
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 对话历史面板 -->
+                    <div class="chat-history-panel" id="chat-history-panel">
+                        <div class="chat-history-header">
+                            <h3>对话历史</h3>
+                            <button class="btn btn-ghost btn-sm" id="close-history-btn">✕</button>
+                        </div>
+                        <div class="chat-history-list" id="chat-history-list">
+                            <!-- 对话列表 -->
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ========== 心理测评模块 ========== -->
+                <section class="module-page" id="measure-page">
+                    <div class="page-header">
+                        <h1 class="page-title">
+                            <span class="page-title-icon">📋</span>
+                            心理测评
+                        </h1>
+                        <p class="page-description">标准化心理量表测评，了解自己的情绪和心理状态</p>
+                    </div>
+                    
+                    <!-- 测评进度 -->
+                    <div class="measure-progress" id="measure-progress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="measure-progress-fill"></div>
+                        </div>
+                        <div class="progress-text" id="measure-progress-text">0/0</div>
+                    </div>
+                    
+                    <!-- 返回按钮 -->
+                    <button class="btn btn-secondary mb-lg" id="measure-back-btn" style="display: none;">
+                        ← 返回量表列表
+                    </button>
+                    
+                    <!-- 测评题目 -->
+                    <div id="measure-question" style="display: none;">
+                        <!-- 题目内容 -->
+                    </div>
+                    
+                    <!-- 量表列表 -->
+                    <div id="measure-scale-list">
+                        <!-- 量表卡片列表 -->
+                    </div>
+                    
+                    <!-- 测评历史 -->
+                    <div id="measure-history" style="display: none;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">📋 测评历史</h3>
+                                <button class="btn btn-ghost btn-sm" id="measure-export-btn">导出结果</button>
+                            </div>
+                            <div class="card-body" id="measure-history-list">
+                                <!-- 历史记录 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 结果图表容器 -->
+                    <div id="result-chart-container" class="result-chart mt-lg" style="display: none;">
+                        <div class="card-title mb-md">
+                            <span>📊</span> 结果可视化
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="result-radar-chart"></canvas>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ========== 心理日记模块 ========== -->
+                <section class="module-page" id="diary-page">
+                    <div class="page-header">
+                        <h1 class="page-title">
+                            <span class="page-title-icon">📔</span>
+                            心理日记
+                        </h1>
+                        <p class="page-description">记录每日心情，关注情绪变化，追踪心理成长</p>
+                    </div>
+                    
+                    <div class="diary-container">
+                        <!-- 日记编辑器 -->
+                        <div class="diary-editor" id="diary-editor-section">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title" id="diary-editor-title">
+                                        📝 今日心情
+                                    </h3>
+                                    <div class="d-flex gap-sm">
+                                        <button class="btn btn-ghost btn-sm" id="diary-export-btn">导出</button>
+                                        <button class="btn btn-ghost btn-sm" id="diary-clear-btn">清空</button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <!-- 心情选择 -->
+                                    <div class="input-group">
+                                        <label class="input-label">今天的心情</label>
+                                        <div class="mood-selector" id="diary-mood-selector">
+                                            <!-- 心情选项 -->
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 标签选择 -->
+                                    <div class="input-group">
+                                        <label class="input-label">相关话题（可选）</label>
+                                        <div class="diary-tags" id="diary-tag-selector">
+                                            <!-- 标签选项 -->
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 日记内容 -->
+                                    <div class="input-group">
+                                        <label class="input-label">写下今天的想法...</label>
+                                        <div class="diary-content">
+                                            <textarea 
+                                                id="diary-content" 
+                                                class="diary-content-input" 
+                                                placeholder="今天发生了什么？你的感受如何？"
+                                            ></textarea>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 操作按钮 -->
+                                    <div class="diary-actions">
+                                        <button class="btn btn-primary btn-block" id="diary-save-btn">
+                                            💾 保存日记
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 日历面板 -->
+                        <div class="diary-calendar">
+                            <div class="calendar-header">
+                                <button class="calendar-nav-btn" id="diary-prev-month">←</button>
+                                <h3 class="calendar-title" id="diary-calendar-title">2024年1月</h3>
+                                <button class="calendar-nav-btn" id="diary-next-month">→</button>
+                            </div>
+                            <button class="btn btn-ghost btn-sm btn-block mb-md" id="diary-today">回到今天</button>
+                            <div class="calendar-grid" id="diary-calendar-grid">
+                                <!-- 日历网格 -->
+                            </div>
+                            <div class="calendar-legend">
+                                <div class="legend-item">
+                                    <span class="legend-dot" style="background: var(--accent-warm);"></span>
+                                    <span>有日记</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot" style="background: var(--primary-color);"></span>
+                                    <span>今天</span>
+                                </div>
+                            </div>
+                            
+                            <!-- 本月日记列表 -->
+                            <div class="card mt-lg">
+                                <div class="card-header">
+                                    <h3 class="card-title">本月日记</h3>
+                                </div>
+                                <div class="card-body" id="diary-entries-list">
+                                    <!-- 日记列表 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ========== 心理信件模块 ========== -->
+                <section class="module-page" id="letter-page">
+                    <div class="page-header">
+                        <h1 class="page-title">
+                            <span class="page-title-icon">💌</span>
+                            心理信件
+                        </h1>
+                        <p class="page-description">给未来自己或重要的人写信，让时间见证成长</p>
+                    </div>
+                    
+                    <div class="letter-container">
+                        <!-- 信件列表 -->
+                        <div class="letter-list" id="letter-list">
+                            <div class="letter-list-header">
+                                <button class="btn btn-primary btn-block" id="letter-new-btn">
+                                    ✍️ 写一封信
+                                </button>
+                            </div>
+                            <div class="letter-list-body" id="letter-list-body">
+                                <!-- 信件列表 -->
+                            </div>
+                        </div>
+                        
+                        <!-- 信件编辑器 -->
+                        <div class="letter-editor" id="letter-editor" style="display: none;">
+                            <div class="letter-editor-header">
+                                <div class="d-flex align-center justify-between mb-md">
+                                    <div class="card-title">
+                                        <span>✏️</span>
+                                        <span>写信</span>
+                                    </div>
+                                    <button class="btn btn-ghost" onclick="LetterModule.showLetterList()">取消</button>
+                                </div>
+                                
+                                <div class="letter-recipient">
+                                    <span class="letter-recipient-label">写给</span>
+                                    <select id="letter-recipient-type" class="input" style="flex:1; max-width: 200px;" onchange="LetterModule.updateRecipientPlaceholder()">
+                                        <option value="future_self">🔮 未来的自己</option>
+                                        <option value="past_self">⏳ 过去的自己</option>
+                                        <option value="friend">👫 朋友</option>
+                                        <option value="family">👨‍👩‍👧 家人</option>
+                                        <option value="partner">💕 爱人</option>
+                                        <option value="other">✉️ 其他人</option>
+                                    </select>
+                                    <input type="text" id="letter-recipient-name" class="input" placeholder="称呼（选填）" style="flex:1;">
+                                </div>
+                                
+                                <div class="letter-open-date">
+                                    <span class="letter-recipient-label">开启日期</span>
+                                    <input type="date" id="letter-unlock-date" class="input" style="flex:1;">
+                                    <span class="text-secondary" style="font-size: var(--font-size-xs);">留空则立即可读</span>
+                                </div>
+                                
+                                <div class="letter-tips">
+                                    <div class="letter-tips-title">
+                                        <span>💡</span> 写信小提示
+                                    </div>
+                                    <ul class="letter-tips-list">
+                                        <li>想象你正在和一个老朋友聊天，轻松地写下你的想法</li>
+                                        <li>可以描述你最近的心情、遇到的挑战或取得的进步</li>
+                                        <li>不要担心语法或措辞，真实地表达最重要</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="letter-editor-body">
+                                <textarea id="letter-content" class="letter-content-input" placeholder="在这里写下你想说的话..."></textarea>
+                            </div>
+                            
+                            <div class="letter-editor-footer">
+                                <div class="letter-privacy">
+                                    <span class="letter-privacy-icon">🔒</span>
+                                    <span>信件仅存储在您的本地设备</span>
+                                </div>
+                                <div class="d-flex gap-md">
+                                    <button class="btn btn-secondary" onclick="LetterModule.deleteCurrentLetter()">删除</button>
+                                    <button class="btn btn-primary" onclick="LetterModule.saveCurrentLetter()">💾 保存</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ========== 用户管理模块（管理员专用） ========== -->
+                <section class="module-page" id="userManagement-page">
+                    <div class="page-header">
+                        <h1 class="page-title">
+                            <span class="page-title-icon">👥</span>
+                            用户管理
+                        </h1>
+                        <p class="page-description">管理系统用户，查看用户数据和活动状态</p>
+                    </div>
+                    
+                    <div class="admin-panel">
+                        <!-- 用户统计 -->
+                        <div class="admin-stats">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #E3F2FD, #BBDEFB);">👥</div>
+                                <div class="stat-value" id="admin-user-count">0</div>
+                                <div class="stat-label">总用户数</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #E8F5E9, #C8E6C9);">📝</div>
+                                <div class="stat-value" id="admin-diary-count">0</div>
+                                <div class="stat-label">日记总数</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #FFF3E0, #FFE0B2);">📋</div>
+                                <div class="stat-value" id="admin-measure-count">0</div>
+                                <div class="stat-label">测评总数</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #F3E5F5, #E1BEE7);">💌</div>
+                                <div class="stat-value" id="admin-letter-count">0</div>
+                                <div class="stat-label">信件总数</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 用户列表 -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">📋 用户列表</h3>
+                                <div class="d-flex gap-sm">
+                                    <button class="btn btn-primary btn-sm" id="admin-add-user-btn">➕ 添加管理员</button>
+                                    <button class="btn btn-ghost btn-sm" id="admin-refresh-btn">🔄 刷新</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>用户名</th>
+                                            <th>角色</th>
+                                            <th>注册时间</th>
+                                            <th>最后登录</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="user-list-tbody">
+                                        <!-- 用户列表 -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- 添加管理员弹窗 -->
+                        <div class="modal-overlay" id="add-admin-modal" style="display: none;">
+                            <div class="modal">
+                                <div class="modal-header">
+                                    <h3 class="modal-title">添加管理员</h3>
+                                    <button class="modal-close" onclick="document.getElementById('add-admin-modal').style.display='none'">✕</button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="input-group">
+                                        <label class="input-label">用户名</label>
+                                        <input type="text" id="add-admin-username" class="input" placeholder="输入用户名">
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="input-label">密码</label>
+                                        <input type="password" id="add-admin-password" class="input" placeholder="输入密码">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" onclick="document.getElementById('add-admin-modal').style.display='none'">取消</button>
+                                    <button class="btn btn-primary" onclick="AdminModule.addAdmin()">添加</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ========== 数据导出模块（管理员专用） ========== -->
+                <section class="module-page" id="dataExport-page">
+                    <div class="page-header">
+                        <h1 class="page-title">
+                            <span class="page-title-icon">📊</span>
+                            数据导出
+                        </h1>
+                        <p class="page-description">导出平台数据，支持按用户和时间范围筛选</p>
+                    </div>
+                    
+                    <div class="admin-panel">
+                        <div class="export-options">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">📤 导出选项</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="input-group">
+                                        <label class="input-label">选择数据类型</label>
+                                        <div class="checkbox-group">
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" id="export-diary" checked>
+                                                <span>日记数据</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" id="export-measure" checked>
+                                                <span>测评数据</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" id="export-chat" checked>
+                                                <span>对话数据</span>
+                                            </label>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" id="export-letter" checked>
+                                                <span>信件数据</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label class="input-label">导出范围</label>
+                                        <select id="export-range" class="input">
+                                            <option value="all">全部用户</option>
+                                            <option value="current">当前用户</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label class="input-label">日期范围（可选）</label>
+                                        <div class="date-range">
+                                            <input type="date" id="export-start-date" class="input" placeholder="开始日期">
+                                            <span>至</span>
+                                            <input type="date" id="export-end-date" class="input" placeholder="结束日期">
+                                        </div>
+                                    </div>
+                                    
+                                    <button class="btn btn-primary btn-lg" id="do-export-btn">
+                                        📥 开始导出
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="export-preview">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">📋 导出预览</h3>
+                                </div>
+                                <div class="card-body" id="export-preview-content">
+                                    <p class="text-secondary">选择导出选项后，这里会显示预览信息</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ========== 项目管理模块 ========== -->
+                <section class="module-page" id="projects-page">
+                    <div class="page-header">
+                        <h1 class="page-title">
+                            <span class="page-title-icon">📁</span>
+                            科研项目管理
+                        </h1>
+                        <p class="page-description">为每个研究项目创建独立空间，分类管理对话、测评和日记数据</p>
+                    </div>
+                    
+                    <div class="mb-lg">
+                        <button class="btn btn-primary" id="new-project-btn">
+                            ➕ 创建新项目
+                        </button>
+                    </div>
+                    
+                    <div class="projects-grid" id="project-list">
+                        <!-- 项目列表 -->
+                    </div>
+                </section>
+                
+            </div>
+        </main>
+    </div>
+    
+    <!-- Toast容器 -->
+    <div id="toast-container" class="toast-container"></div>
+    
+    <!-- 项目创建/编辑弹窗 -->
+    <div class="modal-overlay" id="project-modal" style="display: none;">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="project-modal-title">创建新项目</h3>
+                <button class="modal-close" onclick="ProjectManager.hideProjectModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label class="input-label">项目图标</label>
+                    <select id="project-icon-select" class="input">
+                        <option value="📁">📁 默认</option>
+                        <option value="🔬">🔬 科研</option>
+                        <option value="📚">📚 学术</option>
+                        <option value="🧠">🧠 心理</option>
+                        <option value="👶">👶 儿童</option>
+                        <option value="🏫">🏫 教育</option>
+                        <option value="💼">💼 职场</option>
+                        <option value="❤️">❤️ 情感</option>
+                        <option value="🌱">🌱 成长</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">项目名称 *</label>
+                    <input type="text" id="project-name-input" class="input" placeholder="例如：留守儿童共情研究">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">项目描述</label>
+                    <textarea id="project-desc-input" class="input" rows="3" placeholder="简要描述研究内容或目的"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="delete-project-btn" style="display:none;" onclick="ProjectManager.deleteProject()">删除</button>
+                <div style="flex:1;"></div>
+                <button class="btn btn-secondary" onclick="ProjectManager.hideProjectModal()">取消</button>
+                <button class="btn btn-primary" id="save-project-btn" onclick="ProjectManager.createProject()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 加载动画 -->
+    <div class="loading-overlay" id="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>加载中...</p>
+    </div>
+    
+    <!-- 引入数据文件 -->
+    <script src="data/scales.js"></script>
+    
+    <!-- 引入模块文件 -->
+    <script src="modules/chat.js"></script>
+    <script src="modules/diary.js"></script>
+    <script src="modules/measure.js"></script>
+    <script src="modules/letter.js"></script>
+    
+    <!-- 引入主应用 -->
+    <script src="app.js"></script>
+</body>
+</html>
